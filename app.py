@@ -11,13 +11,19 @@ with open('best_xgb_model.pkl', 'rb') as model_file:
 def predict_loan_status(features):
     print("Encoded features: ", features)
 
-    encoded_features = [
-        categorical_features['person_gender'][features[1]],  
-        categorical_features['person_education'][features[2]],  
-        categorical_features['person_home_ownership'][features[5]],  
-        categorical_features['loan_intent'][features[7]]  
-    ] + features[0:1] + features[3:5] + features[6:8] + features[9:]
-
+    try:
+        encoded_features = [
+            categorical_features['person_gender'][features[1]],  
+            categorical_features['person_education'][features[2]],  
+            categorical_features['person_home_ownership'][features[5]],  
+            categorical_features['loan_intent'][features[7]]  
+        ] + features[0:1] + features[3:5] + features[6:8] + features[9:]
+    except KeyError as e:
+        print(f"KeyError: The key {e} is not found in the categorical_features dictionary.")
+        raise
+        
+    print("Encoded features: ", encoded_features)
+    
     features_df = pd.DataFrame([encoded_features])
     
     scaler = StandardScaler()
