@@ -9,7 +9,14 @@ with open('best_xgb_model.pkl', 'rb') as model_file:
     model = pickle.load(model_file)
 
 def predict_loan_status(features):
-    features_df = pd.DataFrame([features])
+    encoded_features = [
+        categorical_features['person_gender'][features[1]], 
+        categorical_features['person_education'][features[2]],  
+        categorical_features['person_home_ownership'][features[5]], 
+        categorical_features['loan_intent'][features[7]]
+    ] + features[0:1] + features[3:5] + features[6:8] + features[9:]
+
+    features_df = pd.DataFrame([encoded_features])
     
     scaler = StandardScaler()
     scaled_features = scaler.fit_transform(features_df)
@@ -54,18 +61,10 @@ categorical_features = {
     'loan_intent': {'Personal': 0, 'Business': 1, 'Debt Consolidation': 2}
 }
 
-encoded_features = [
-    categorical_features['person_gender'][input_features[1]], 
-    categorical_features['person_education'][input_features[2]],  
-    categorical_features['person_home_ownership'][input_features[5]], 
-    categorical_features['loan_intent'][input_features[7]], 
-] + input_features[0:1] + input_features[3:5] + input_features[6:8] + input_features[9:]
-
 if st.button('Predict Loan Status'):
-    prediction = predict_loan_status(encoded_features)
+    prediction = predict_loan_status(input_features)
     
     if prediction == 1:
         st.success('Loan Approved')
     else:
         st.error('Loan Denied')
-
