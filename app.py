@@ -55,10 +55,10 @@ categorical_features = {
 }
 
 encoded_features = [
-    categorical_features['person_gender'][input_features[1]],
-    categorical_features['person_education'][input_features[2]],
-    categorical_features['person_home_ownership'][input_features[5]],
-    categorical_features['loan_intent'][input_features[7]],
+    categorical_features['person_gender'][input_features[1]], 
+    categorical_features['person_education'][input_features[2]],  
+    categorical_features['person_home_ownership'][input_features[5]], 
+    categorical_features['loan_intent'][input_features[7]], 
 ] + input_features[0:1] + input_features[3:5] + input_features[6:8] + input_features[9:]
 
 if st.button('Predict Loan Status'):
