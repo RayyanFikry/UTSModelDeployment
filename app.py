@@ -19,8 +19,8 @@ def predict_loan_status(features):
             categorical_features['loan_intent'][features[7]]  
         ] + features[0:1] + features[3:5] + features[6:8] + features[9:]
     except KeyError as e:
-        print(f"KeyError: The key {e} is not found in the categorical_features dictionary.")
-        raise
+        print(f"KeyError: The key {e}  - check if all categorical inputs are encoded correctly.")
+        return None
         
     print("Encoded features: ", encoded_features)
     
@@ -79,7 +79,8 @@ encoded_features = [
 if st.button('Predict Loan Status'):
     prediction = predict_loan_status(input_features)
     
-    if prediction == 1:
-        st.success('Loan Approved')
-    else:
-        st.error('Loan Denied')
+    if prediction is not None:
+        if prediction == 1:
+            st.success('Loan Approved')
+        else:
+            st.error('Loan Denied')
