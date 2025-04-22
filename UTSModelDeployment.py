@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score
+import pickle
 
 class LoanPredictionModel:
     def __init__(self, data_path):
@@ -12,6 +13,7 @@ class LoanPredictionModel:
         self.y_train = None
         self.y_test = None
         self.model = XGBClassifier(random_state=42, n_estimators=50, eval_metric='logloss')
+        self.scaler = StandardScaler()
 
     def preprocess_data(self):
         # Drop the target column 'loan_status' and define features (X) and target (y)
@@ -20,8 +22,10 @@ class LoanPredictionModel:
         
         # Split the dataset into training and testing sets
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        self.X_train_scaled = StandardScaler().fit_transform(X_train)
-        self.X_test_scaled = StandardScaler().transform(X_test)
+        
+        # Fit and transform the training data, and transform the test data
+        self.X_train_scaled = self.scaler.fit_transform(X_train)
+        self.X_test_scaled = self.scaler.transform(X_test)
         self.y_train = y_train
         self.y_test = y_test
 
@@ -35,10 +39,14 @@ class LoanPredictionModel:
         accuracy = accuracy_score(self.y_test, predictions)
         print(f"XGBoost Accuracy: {accuracy}")
 
-        self.model.save_model('best_xgb_model.xgb')
-        
+        # Save both the model and the scaler for future use
+        with open('best_xgb_model.pkl', 'wb') as model_file:
+            pickle.dump(self.model, model_file)
+        with open('scaler.pkl', 'wb') as scaler_file:
+            pickle.dump(self.scaler, scaler_file)
+
 # Example usage
-data_path = 'Dataset_A_loan.csv'
+data_path = 'Dataset_A_loan.csv'  # Update the path to your dataset if needed
 model = LoanPredictionModel(data_path)
 model.preprocess_data()
 model.train_model()
