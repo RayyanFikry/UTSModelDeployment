@@ -12,21 +12,32 @@ def predict_loan_status(features):
     print("Encoded features: ", features)
 
     try:
+        # Encoding categorical features
         encoded_features = [
             categorical_features['person_gender'][features[1]],  
             categorical_features['person_education'][features[2]],  
             categorical_features['person_home_ownership'][features[5]],  
             categorical_features['loan_intent'][features[7]]  
         ] + features[0:1] + features[3:5] + features[6:8] + features[9:]
-    
-        features_df = pd.DataFrame([encoded_features])
+        
+        # Separate continuous features for scaling
+        continuous_features = encoded_features[4:6] + encoded_features[7:9] + encoded_features[9:]
+
+        # Create dataframe for scaling continuous features
+        continuous_df = pd.DataFrame([continuous_features])
+
+        # Apply StandardScaler only to continuous features
+        scaler = StandardScaler()
+        scaled_continuous_features = scaler.fit_transform(continuous_df)
+        
+        # Combine encoded categorical features with scaled continuous features
+        final_features = encoded_features[:4] + scaled_continuous_features[0].tolist()
+
+        features_df = pd.DataFrame([final_features])
 
         print("Encoded Features DataFrame: \n", features_df)
     
-        scaler = StandardScaler()
-        scaled_features = scaler.fit_transform(features_df)
-    
-        prediction = model.predict(scaled_features)
+        prediction = model.predict(features_df)
         return prediction[0]
 
     except KeyError as e:
@@ -70,6 +81,7 @@ categorical_features = {
     'loan_intent': {'Personal': 0, 'Business': 1, 'Debt Consolidation': 2}
 }
 
+# Encoding features
 encoded_features = [
     categorical_features['person_gender'][input_features[1]], 
     categorical_features['person_education'][input_features[2]],  
