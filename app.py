@@ -18,19 +18,20 @@ def predict_loan_status(features):
             categorical_features['person_home_ownership'][features[5]],  
             categorical_features['loan_intent'][features[7]]  
         ] + features[0:1] + features[3:5] + features[6:8] + features[9:]
+    
+        features_df = pd.DataFrame([encoded_features])
+
+        print("Encoded Features DataFrame: \n", features_df)
+    
+        scaler = StandardScaler()
+        scaled_features = scaler.fit_transform(features_df)
+    
+        prediction = model.predict(scaled_features)
+        return prediction[0]
+
     except KeyError as e:
         print(f"KeyError: The key {e}  - check if all categorical inputs are encoded correctly.")
         return None
-        
-    print("Encoded features: ", encoded_features)
-    
-    features_df = pd.DataFrame([encoded_features])
-    
-    scaler = StandardScaler()
-    scaled_features = scaler.fit_transform(features_df)
-    
-    prediction = model.predict(scaled_features)
-    return prediction[0]
 
 person_age = st.number_input('Age of the Person', min_value=18, max_value=100, step=1)
 person_gender = st.selectbox('Gender of the Person', ['Male', 'Female'])
