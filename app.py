@@ -3,8 +3,9 @@ import pandas as pd
 import pickle
 from sklearn.preprocessing import StandardScaler
 
-st.title('Loan Prediction App rayyan')
+st.title('Loan Prediction App')
 
+# Memuat model yang sudah dilatih
 with open('best_xgb_model.pkl', 'rb') as model_file:
     model = pickle.load(model_file)
 
@@ -12,7 +13,7 @@ def predict_loan_status(features):
     print("Encoded features: ", features)
 
     try:
-        # Encode fitur kategorikal
+        # Encoding fitur kategorikal
         encoded_features = [
             categorical_features['person_gender'][features[1]],  
             categorical_features['person_education'][features[2]],  
@@ -20,7 +21,7 @@ def predict_loan_status(features):
             categorical_features['loan_intent'][features[7]]  
         ] + features[0:1] + features[3:5] + features[6:8] + features[9:]
 
-        # Pisahkan fitur kategorikal dan numerik
+        # Pisahkan fitur numerik dan kategorikal
         categorical_encoded = encoded_features[:4]  # fitur kategorikal yang sudah dienkode
         numerical_features = encoded_features[4:]  # fitur numerik yang perlu discale
 
@@ -75,6 +76,7 @@ input_features = [
     previous_loan_defaults_on_file
 ]
 
+# Kategori fitur yang perlu dienkode
 categorical_features = {
     'person_gender': {'Male': 1, 'Female': 0},
     'person_education': {'High School': 0, 'Bachelors': 1, 'Masters': 2, 'PhD': 3},
@@ -92,7 +94,7 @@ encoded_features = [
 
 # Prediksi jika tombol ditekan
 if st.button('Predict Loan Status'):
-    prediction = predict_loan_status(input_features)
+    prediction = predict_loan_status(encoded_features)  # Pastikan mengirimkan `encoded_features`
     
     if prediction is not None:
         if prediction == 1:
