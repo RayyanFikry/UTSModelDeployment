@@ -35,8 +35,7 @@ class LoanPredictionModel:
         accuracy = accuracy_score(self.y_test, predictions)
         print(f"XGBoost Accuracy: {accuracy}")
 
-        with open('best_xgb_model.pkl', 'wb') as model_file:
-            pickle.dump(self.model, model_file)
+        self.model.save_model('best_xgb_model.xgb')
         
 # Example usage
 data_path = 'Dataset_A_loan.csv'
