@@ -5,9 +5,12 @@ from sklearn.preprocessing import StandardScaler
 
 st.title('Loan Prediction App')
 
-# Memuat model yang sudah dilatih
+# Memuat model dan scaler yang sudah dilatih
 with open('best_xgb_model.pkl', 'rb') as model_file:
     model = pickle.load(model_file)
+
+with open('scaler.pkl', 'rb') as scaler_file:
+    scaler = pickle.load(scaler_file)
 
 def predict_loan_status(features):
     print("Encoded features: ", features)
@@ -25,10 +28,9 @@ def predict_loan_status(features):
         categorical_encoded = encoded_features[:4]  # fitur kategorikal yang sudah dienkode
         numerical_features = encoded_features[4:]  # fitur numerik yang perlu discale
 
-        # Skala hanya fitur numerik
+        # Skala hanya fitur numerik dengan scaler yang sudah dilatih
         numerical_df = pd.DataFrame([numerical_features])
-        scaler = StandardScaler()
-        scaled_numerical = scaler.fit_transform(numerical_df)
+        scaled_numerical = scaler.transform(numerical_df)  # Menggunakan scaler yang dimuat dari file
 
         # Gabungkan kembali fitur kategorikal dan numerik yang sudah discale
         final_features = categorical_encoded + scaled_numerical[0].tolist()
