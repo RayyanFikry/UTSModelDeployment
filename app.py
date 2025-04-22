@@ -5,10 +5,11 @@ from sklearn.preprocessing import StandardScaler
 
 st.title('Loan Prediction App')
 
-# Memuat model dan scaler yang sudah dilatih
+# Memuat model yang sudah dilatih
 with open('best_xgb_model.pkl', 'rb') as model_file:
     model = pickle.load(model_file)
 
+# Memuat scaler yang sudah dilatih
 with open('scaler.pkl', 'rb') as scaler_file:
     scaler = pickle.load(scaler_file)
 
