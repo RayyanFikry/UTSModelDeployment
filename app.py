@@ -3,7 +3,7 @@ import pandas as pd
 import pickle
 from sklearn.preprocessing import StandardScaler
 
-st.title('Loan Prediction App')
+st.title('Loan Prediction App rayyan')
 
 with open('best_xgb_model.pkl', 'rb') as model_file:
     model = pickle.load(model_file)
@@ -12,7 +12,7 @@ def predict_loan_status(features):
     print("Encoded features: ", features)
 
     try:
-        # Encode categorical features into numeric values
+        # Encode fitur kategorikal
         encoded_features = [
             categorical_features['person_gender'][features[1]],  
             categorical_features['person_education'][features[2]],  
@@ -20,7 +20,7 @@ def predict_loan_status(features):
             categorical_features['loan_intent'][features[7]]  
         ] + features[0:1] + features[3:5] + features[6:8] + features[9:]
 
-        # Pisahkan fitur numerik dan kategorikal
+        # Pisahkan fitur kategorikal dan numerik
         categorical_encoded = encoded_features[:4]  # fitur kategorikal yang sudah dienkode
         numerical_features = encoded_features[4:]  # fitur numerik yang perlu discale
 
